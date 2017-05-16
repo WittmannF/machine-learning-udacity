@@ -146,7 +146,7 @@ def run():
     #   verbose     - set to True to display additional output from the simulation
     #   num_dummies - discrete number of dummy agents in the environment, default is 100
     #   grid_size   - discrete number of intersections (columns, rows), default is (8, 6)
-    env = Environment(verbose=True, num_dummies=10, grid_size=(10,5))
+    env = Environment(verbose=True, num_dummies=50, grid_size=(10,5))
     
     ##############
     # Create the driving agent
@@ -169,7 +169,7 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, update_delay=0.01, log_metrics=True)
+    sim = Simulator(env, update_delay=0.3, log_metrics=True)
     
     ##############
     # Run the simulator
