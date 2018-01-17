@@ -251,7 +251,7 @@ class Environment(object):
             else:
                 if left != 'forward':  # we don't want to override left == 'forward'
                     left = other_heading
-
+ 
         return {'light': light, 'oncoming': oncoming, 'left': left, 'right': right}
 
     def get_deadline(self, agent):

@@ -108,13 +108,39 @@ class Simulator(object):
             self.log_writer = csv.DictWriter(self.log_file, fieldnames=self.log_fields)
             self.log_writer.writeheader()
 
-    def run(self, tolerance=0.05, n_test=0):
+    def display_test_init(self):
+        self.pygame = importlib.import_module('pygame')
+        self.pygame.init()
+        self.screen = self.pygame.display.set_mode(self.size)
+        self._logo = self.pygame.transform.smoothscale(self.pygame.image.load(os.path.join("images", "logo.png")), (self.road_width, self.road_width))
+
+        self._ew = self.pygame.transform.smoothscale(self.pygame.image.load(os.path.join("images", "east-west.png")), (self.road_width, self.road_width))
+        self._ns = self.pygame.transform.smoothscale(self.pygame.image.load(os.path.join("images", "north-south.png")), (self.road_width, self.road_width))
+
+        self.frame_delay = max(1, int(self.update_delay * 1000))  # delay between GUI frames in ms (min: 1)
+        self.agent_sprite_size = (32, 32)
+        self.primary_agent_sprite_size = (42, 42)
+        self.agent_circle_radius = 20  # radius of circle, when using simple representation
+        for agent in self.env.agent_states:
+            if agent.color == 'white':
+                agent._sprite = self.pygame.transform.smoothscale(self.pygame.image.load(os.path.join("images", "car-{}.png".format(agent.color))), self.primary_agent_sprite_size)
+            else:
+                agent._sprite = self.pygame.transform.smoothscale(self.pygame.image.load(os.path.join("images", "car-{}.png".format(agent.color))), self.agent_sprite_size)
+            agent._sprite_size = (agent._sprite.get_width(), agent._sprite.get_height())
+
+        self.font = self.pygame.font.Font(None, 20)
+        self.paused = False 
+
+    def run(self, tolerance=0.05, n_test=0, update_delay_test=None, display_test=False):
         """ Run a simulation of the environment. 
 
         'tolerance' is the minimum epsilon necessary to begin testing (if enabled)
         'n_test' is the number of testing trials simulated
 
         Note that the minimum number of training trials is always 20. """
+
+        if update_delay_test is None:
+            update_delay_test = self.update_delay
 
         self.quit = False
 
@@ -134,9 +160,15 @@ class Simulator(object):
                         if a.epsilon < tolerance: # assumes epsilon decays to 0
                             testing = True
                             trial = 1
+                            if display_test:
+                                self.display_test_init()
+                            self.update_delay = update_delay_test
                     else:
                         testing = True
                         trial = 1
+                        if display_test:
+                                self.display_test_init()
+                        self.update_delay = update_delay_test
                         
             # Break if we've reached the limit of testing trials
             else:
@@ -164,7 +196,7 @@ class Simulator(object):
                     self.current_time = time.time() - self.start_time
 
                     # Handle GUI events
-                    if self.display:
+                    if self.display or display_test and testing:
                         for event in self.pygame.event.get():
                             if event.type == self.pygame.QUIT:
                                 self.quit = True
@@ -186,7 +218,7 @@ class Simulator(object):
                     self.render_text(trial, testing)
 
                     # Render GUI and sleep
-                    if self.display:
+                    if self.display or display_test and testing:
                         self.render(trial, testing)
                         self.pygame.time.wait(self.frame_delay)
 
@@ -246,7 +278,7 @@ class Simulator(object):
         print "\nSimulation ended. . . "
 
         # Report final metrics
-        if self.display:
+        if self.display or display_test and testing:
             self.pygame.display.quit()  # shut down pygame
 
     def render_text(self, trial, testing=False):
