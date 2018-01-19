@@ -13225,12 +13225,12 @@ H1ZszPaKDLH1AAAAAElFTkSuQmCC
 <p><strong>Answer:</strong>
 <strong>If a state is defined using the features you've selected from Question 4, what would be the size of the state space?</strong></p>
 <ul>
-<li>As previously discussed, I will be ignoring the features <code>deadline</code> and <code>right</code>. Hence, by state space we would have the features 'waypoint' (3 states = 'forward', 'left' and 'right'), 'light' (2 states = 'green' and 'red'), 'left' (3 states = 'forward', 'left', 'right') and 'oncoming' (3 states = 'forward', 'left', 'right'). </li>
-<li>The size of the state space would be $3 * 2 * 3 * 3 = 54$.</li>
+<li>As previously discussed, I will be ignoring the features <code>deadline</code> and <code>right</code>. Hence, by state space we would have the features 'waypoint' (3 states = 'forward', 'left' and 'right'), 'light' (2 states = 'green' and 'red'), 'left' (4 states = 'None', 'forward', 'left', 'right') and 'oncoming' (4 states = 'forward', 'left', 'right'). </li>
+<li>The size of the state space would be $3 * 2 * 4 * 4 = 96$. Waypoint also has a 'None' state, but it will only occour when reaching the destination.</li>
 </ul>
 <p><strong> Given what you know about the evironment and how it is simulated, do you think the driving agent could learn a policy for each possible state within a reasonable number of training trials?</strong></p>
 <ul>
-<li>Those 54 possible states have to be combined into 4 possible actions (None, Left, Right and Forward). Hence, the number of policies to be learned are $54*4 = 216$. Although it is quite a big number, it is possible to learn those policies withing a reasonable number of training trials.</li>
+<li>Those 96 possible states have to be combined into 4 possible actions (None, Left, Right and Forward). Hence, the number of policies to be learned are $96*4 = 384$. Although it is quite a big number, it is possible to learn those policies withing a reasonable number of training trials.</li>
 </ul>
 
 </div>
